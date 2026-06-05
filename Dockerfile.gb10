@@ -1,0 +1,16 @@
+FROM vllm/vllm-openai:deepseekv4-cu130
+
+WORKDIR /workspace/see-through
+COPY . /workspace/see-through
+
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PYTHONUNBUFFERED=1 \
+    HF_HOME=/workspace/hf-cache \
+    HUGGINGFACE_HUB_CACHE=/workspace/hf-cache/hub
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git ca-certificates libgl1 libglib2.0-0 libsm6 libxext6 libxrender1 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN python3 -m pip install --upgrade pip setuptools wheel
+RUN python3 -m pip install -r requirements-gb10-inference.txt
